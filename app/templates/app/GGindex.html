@@ -1,0 +1,261 @@
+{% extends "app/layoutnav.html" %}
+
+{% block content %}
+<body>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card">
+								<div class="content">
+									<div class="row">
+										<div class="col-xs-5">
+											<div class="icon-big icon-warning text-center">
+												<i class="ti-user"></i>
+											</div>
+										</div>
+										<div class="col-xs-7">
+											<div class="numbers">
+												<p>学生数</p>
+												{{people}}
+											</div>
+										</div>
+									</div>
+								</div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        <i class="ti-light-bulb text-warning"></i> 学生整体状态 <b>{{stauts}}</b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card">
+								<div class="content">
+									<div class="row">
+										<div class="col-xs-5">
+											<div class="icon-big icon-danger text-center">
+												<i class="ti-receipt"></i>
+											</div>
+										</div>
+										<div class="col-xs-7">
+											<div class="numbers">
+												<p>考试次数</p>
+												{{now_testid}}
+											</div>
+										</div>
+									</div>
+								</div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        <i class="ti-tag text-warning"></i> 即将到达第{{next_testid}}次模考
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card">
+								<div class="content">
+									<div class="row">
+										<div class="col-xs-5">
+											<div class="icon-big icon-success text-center">
+												<i class="ti-pulse"></i>
+											</div>
+										</div>
+										<div class="col-xs-7">
+											<div class="numbers">
+												<p>成绩变化</p>
+												{{trend}}%
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card-footer">
+                                    <div class="stats">
+                                        <i class="ti-calendar"></i> 较上次考试总体上升{{trend}}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card">
+								<div class="content">
+									<div class="row">
+										<div class="col-xs-5">
+											<div class="icon-big icon-info text-center">
+												<i class="ti-crown"></i>
+											</div>
+										</div>
+										<div class="col-xs-7">
+											<div class="numbers">
+												<p>最近一次考试</p>
+												No.{{rank}}
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card-footer">
+                                    <div class="stats">
+                                        <i class="ti-medall"></i> 位列同系班第{{rank}}位
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card" style="min-height: 350px">
+                                <div class="header card-header-text">
+                                    <h4 class="title">成绩走向</h4>
+                                </div>
+                                <div id="main" style="width: 100%;height:350px;"></div>
+                            </div>
+                        </div>
+						<div class="col-lg-3 col-sm-6">
+							<div class="card card-circle-chart" data-background="color" data-color="orange" style="min-height: 350px">
+								<div class="header text-center">
+	                                <h5 class="title">距离下次月考</h5>
+	                                <p class="description">还剩 {{next_test}} 天</p>
+	                            </div>
+								<div class="content">
+									<div id="chartNewVisitors" class="chart-circle" data-percent="{{next_test_precent}}">{{next_test_precent}}%</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-3 col-sm-6">
+							<div class="card card-circle-chart" data-background="color" data-color="blue" style="min-height: 350px">
+								<div class="header text-center">
+	                                <h5 class="title">距离高考</h5>
+	                                <p class="description">还剩 {{final_test}} 天</p>
+	                            </div>
+								<div class="content">
+									<div id="chartSubscriptions" class="chart-circle" data-percent="{{final_test_precent}}">{{final_test_precent}}%</div>
+								</div>
+							</div>
+						</div>
+                    </div>
+                    <div class="row">      
+                        <div class="col-lg-12 col-md-12">
+                            <div class="card" style="min-height: 250px">
+                                <div class="header card-header-text">
+                                    <h4 class="title">学生成绩变化表</h4>
+                                    <p class="category">在第{{now_testid}}次考试中名列前茅的学生</p>
+                                </div>
+                                <div class="content table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="text-primary">
+											<tr>
+												<th>学号</th>
+												<th>姓名</th>
+												<th>数学</th>
+												<th>英语</th>
+                                                <th>语文</th>
+                                                <th>物理</th>
+                                                <th>化学</th>
+                                                <th>生物</th>
+                                                <th>总分</th>
+											</tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for student in grade%}
+                                            <tr>
+                                                <td>{{student.studentNum}}</td>
+                                                <td>{{student.STName}}</td>
+                                                <td>{{student.Math3}}</td>
+                                                <td>{{student.English3}}</td>
+                                                <td>{{student.Chinese3}}</td>
+                                                <td>{{student.Physics3}}</td>
+                                                <td>{{student.Biology3}}</td>
+                                                <td>{{student.Chemistry3}}</td>
+                                                <td>{{student.Total}}</td>
+                                            </tr>
+                                            {% endfor%}    
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>           
+                    </div>
+                </div>
+
+{% endblock %}
+{% block scripts %}
+     <script type="text/javascript">
+         function navset() {
+             var navs = document.getElementById("overview")
+             navs.setAttribute("class", "active")
+         }
+         window.onload=navset();
+    </script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var option;
+        // 指定图表的配置项和数据
+        option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['语文', '数学', '英语', '物理', '化学', '生物']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                right:'5%',
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: {{testid|safe}}
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '语文',
+                    type: 'line',                   
+                    data: {{chinese}}
+                },
+                {
+                    name: '数学',
+                    type: 'line',                    
+                    data: {{math}}
+                },
+                {
+                    name: '英语',
+                    type: 'line',                    
+                    data: {{english}}
+                },
+                {
+                    name: '物理',
+                    type: 'line',                   
+                    data: {{phy}}
+                },
+                {
+                    name: '化学',
+                    type: 'line',               
+                    data: {{bio}}
+                },
+                {
+                    name: '生物',
+                    type: 'line',                    
+                    data: {{che}}
+                }
+
+            ]
+        };
+         window.onresize = function () { myChart.resize(); }
+        // 使用刚指定的配置项和数据显示图表。
+        option && myChart.setOption(option);
+    </script>
+</body>
+
+{% endblock %}

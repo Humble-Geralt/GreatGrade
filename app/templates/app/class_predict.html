@@ -1,0 +1,297 @@
+{% extends "app/layoutnav.html" %}
+
+{% block content %}
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <form id="allInputsFormValidation" action="." method="post" class="form-horizontal" style="padding: 5px;">
+                        <div class="header card-header-text">
+                            <h4 class="title">班级&难度系数填写</h4>
+                        </div>
+                        {% csrf_token %}
+                        <div class="contect">
+                            <fieldset>
+                                <label class="col-sm-2 control-label">Gpredict</label>
+                                <div class="col-sm-4" id="input" style="padding-bottom: 5px;">
+                                    <input  name="class" type="text" class="form-control col-sm-3" placeholder="请输入班级(您管理的班级为{{class}})" range="[1,50]">
+                                    <span> </span>
+                                </div>
+                                <div class="col-sm-4" id="input">
+                                    <input  name="hardrank" type="text" class="form-control col-sm-3" placeholder="请输入预估难度系数" range="[0,1]">
+                                    <span> </span>
+                                </div>
+                                <button class="btn btn-rose ti-search" type="submit" style="margin-top: 5px;margin-left: 5px;"> 预测</button>
+                            </fieldset>
+                            <div>
+                                <div class="header card-header-text">
+                                    <h4 class="icon-warning">关于预估难度系数的说明</h4>
+                                    <h5>难度系数介于0-1之间，分别对应极简单-极难，当您无法预估时请填写0.3</h5>                              
+                                    <span class="help-block text-warning">{{message}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+                
+    {% if res%}
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card" style="min-height: 350px">
+                
+                    
+                    <div id="first" style="width: 100%;height:300px;"></div>
+                </div>
+            </div>
+    
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card" style="min-height: 350px">
+                    <div class="header card-header-text">
+                         <h3 class="title">预估结果</h3>
+                         <p class="category">仅供参考</p>
+                    </div>
+                     <div class="content text-center" >
+                          <h3>{{premessage}}</h3>
+                          <h3>本班分数预计在 <b>{{grademin}}</b> 到 <b>{{grademax}}</b>之间</h3>
+                          <h3>预估下次考试本班的总平均分为 <b>{{score}}</b> </h3>
+                     </div>
+                </div>
+            </div>      
+        </div>
+    
+        <div class="row">
+            <div class="col-lg-7 col-md-6 col-sm-6">
+                <div class="card" style="min-height: 350px">
+                    <div id="third" style="width: 100%;height:400px;"></div>
+                </div>
+            </div>
+    
+            <div class="col-lg-5 col-md-6 col-sm-6">
+                <div class="card" style="min-height: 350px">
+                    <div id="forth" style="width: 100%;height:400px;"></div>
+                </div>
+           
+    
+        </div>
+    
+        {%endif%}
+    </div>
+</div>   
+</body> 
+
+
+    
+
+
+{% endblock %}
+
+
+{% block scripts %}
+<script type="text/javascript">
+    function navset() {
+        var navs = document.getElementById("predict")
+        var navsin = document.getElementById("class_predict")
+        navs.setAttribute("class", "active")
+        navsin.setAttribute("class", "active")
+    }
+    window.onload = navset();
+</script>
+{%if res%}
+<script type="text/javascript">
+var chartDom1 = document.getElementById('first');
+var PREChart = echarts.init(chartDom1);
+var option;
+option = {
+title:{
+    text:'3D预测图'
+},
+tooltip: {},
+backgroundColor: '#fff',
+visualMap: {
+    show: true,
+    dimension: 2,
+    min: -1,
+    max: 750,
+    inRange: {
+        color: ['#00ffff', '#00bfff', '#007fff', '#0066ff', '#0040ff', '#0000ff', '#4000ff', '#7f00ff', '#bf00ff', '#ff00ff', '#ff00bf']
+    }
+},
+xAxis3D: {
+    type: 'value',
+    max: 10
+},
+yAxis3D: {
+    type: 'value',
+    max: 2
+},
+zAxis3D: {
+    type: 'value',
+    max: 750
+},
+grid3D: {
+    viewControl: {
+        // projection: 'orthographic'
+    }
+},
+series: [{
+    type: 'surface',
+    wireframe: {
+        // show: false
+    },
+    equation: {
+        x: {
+            step: 0.05,
+            max: 10
+        },
+        y: {
+            step: 0.05,
+            max: 2.0
+        },
+        z: function (x, y) {
+            return 375 * (2 / (1 + Math.E ** -({{theta1}} * x + {{theta2}} * y + {{theta3}})));
+            
+        }
+    }
+}]
+}
+
+// 使用刚指定的配置项和数据显示图表。
+option && PREChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var chartDom2 = document.getElementById('third');
+    var THChart = echarts.init(chartDom2);
+    var option;
+
+    option = {
+title: {
+    text: '第{{testid}}次考{{classid}}班均分与年级均分',
+},
+tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+        type: 'shadow'
+    }
+},
+legend: {
+    data: ['班级均分', '年级均分'],
+    x:'right',
+    y:'top'
+},
+grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+},
+xAxis: [{
+    type: 'value',
+    min:0,
+    max: 300,
+    interval: 50,
+    
+    boundaryGap:[0,0.01]
+}],
+yAxis: {
+    type: 'category',
+    data: ['语文', '数学', '外语', '物理', '化学', '生物', '总分']
+},
+series: [
+    {
+        name: '班级均分',
+        type: 'bar',
+        {% for i in avgclass%}
+        data: [{{i.Chinese2}}, {{i.Math2}}, {{i.English2}}, {{i.Physics2}} , {{i.Chemistry2}}, {{i.Biology2}}, {{i.total}}]
+        {% endfor%}
+    },
+    {
+        name: '年级均分',
+        type: 'bar',
+        {% for j in avgall%}
+        data: [{{j.Chinese1}}, {{j.Math1}}, {{j.English1}}, {{j.Physics1}}, {{j.Chemistry1}}, {{j.Biology1}}, {{j.TOTAL}}]
+        {% endfor%}
+    }
+    ]
+};
+
+    
+// 使用刚指定的配置项和数据显示图表。
+option && THChart.setOption(option);
+</script>    
+
+<script type="text/javascript">
+    var chartDom3 = document.getElementById('forth');
+    var myChart = echarts.init(chartDom3);
+    var option;
+
+    option = {
+title: {
+text: '第{{testid}}次考{{classid}}班各分数段人数'
+},
+tooltip: {
+    trigger: 'item'
+},
+legend: {
+    top: '5%',
+    left: 'center'
+},
+series: [
+
+    {
+        name: '学生人数',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+            borderRadius: 10,
+            borderColor: '#fff',
+            borderWidth: 2
+        },
+        label: {
+            show: false,
+            position: 'center'
+        },
+        emphasis: {
+            label: {
+                show: true,
+                fontSize: '40',
+                fontWeight: 'bold'
+            }
+        },
+        labelLine: {
+            show: false
+        },
+        data: [
+            {value: {{grade_fiv}}, name: '[600,750]'},
+            {value: {{grade_four}}, name: '[550,600]'},
+            {value: {{grade_thr}}, name: '[500,550]'},
+            {value: {{grade_sec}}, name: '[400,500]'},
+            {value: {{grade_fir}}, name: '[0,400]'},
+        ]
+    }
+]
+};
+
+// 使用刚指定的配置项和数据显示图表。
+option && myChart.setOption(option);
+</script> 
+{%endif%}
+<script>
+    window.addEventListener("resize", function () {
+                   PREChart.resize();
+                  THChart.resize();
+                  myChart.resize();
+              });
+</script>
+<script type="text/javascript">
+    $().ready(function () {
+        $('#allInputsFormValidation').validate();
+    });
+</script>
+{% endblock %}

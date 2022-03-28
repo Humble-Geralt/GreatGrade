@@ -1,0 +1,179 @@
+{% extends "app/layoutnav.html" %}
+
+{% block content %}
+
+<body>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="content">
+                            <div class="header text-center">
+                                 <h3>学况速览</h3>
+                            </div>
+                        </div>
+                        <span class="or-rule"></span>
+                        <div class="content">
+                            <div class="header card-header-text">
+                                <h4>此次考试年级排名为第 <b>{{rank}}</b> 名</h4>
+                                <h4>本班总平均分为 <b>{{avg_grade}}</b></h4>
+                                <h4>对比上次考试成绩 <b>{{trend}}%</b></h4>
+                            </div>
+                        </div>
+                        <span class="or-rule"></span>
+                        <div class="content">
+                            <h4 class="title">最近一次考试单科第一</h4>
+                            <div class="table-responsive">
+                                   <table class="table table-bordered">
+                                        <thead class="text-primary">
+											<tr>
+												<th>学号</th>
+												<th>姓名</th>
+												<th>科目</th>
+												<th>分数</th>
+											</tr>
+                                            </thead>
+                                         <tbody>
+                                            <tr>  
+                                                <td>{{max_chinese.studentNum}}</td>
+                                                <td>{{max_chinese.STName}}</td>
+                                                <td>语文</td>
+                                                <td>{{max_chinese.Chinese3}}</td>
+                                            </tr>
+                                         </tbody>
+                                         <tbody>
+                                            <tr>
+                                                <td>{{max_math.studentNum}}</td>
+                                                <td>{{max_math.STName}}</td>
+                                                <td>数学</td>
+                                                <td>{{max_math.Math3}}</td>
+                                            </tr>
+                                         </tbody>
+                                         <tbody>
+                                            <tr>
+                                                <td>{{max_english.studentNum}}</td>
+                                                <td>{{max_english.STName}}</td>
+                                                <td>英语</td>
+                                                <td>{{max_english.English3}}</td>
+                                            </tr>
+                                         </tbody>
+                                         <tbody>
+                                            <tr>
+                                                <td>{{max_phy.studentNum}}</td>
+                                                <td>{{max_phy.STName}}</td>
+                                                <td>物理</td>
+                                                <td>{{max_phy.Physics3}}</td>
+                                            </tr>
+                                         </tbody>
+                                         <tbody>
+                                            <tr>
+                                                <td>{{max_che.studentNum}}</td>
+                                                <td>{{max_che.STName}}</td>
+                                                <td>化学</td>
+                                                <td>{{max_che.Chemistry3}}</td>
+                                            </tr>
+                                         </tbody>
+                                         <tbody>
+                                            <tr>
+                                                <td>{{max_bio.studentNum}}</td>
+                                                <td>{{max_bio.STName}}</td>
+                                                <td>生物</td>
+                                                <td>{{max_bio.Biology3}}</td>
+                                            </tr>
+                                         </tbody>
+                                   </table>
+                            </div>
+                        </div>
+                        <span class="or-rule"></span>
+                        <div class="content">
+                              <h4 class="title">最近一次考试前五名</h4>
+                              <div class="table-responsive">
+                                   <table class="table table-bordered">
+                                        <thead class="text-primary">
+											<tr>
+												<th>学号</th>
+												<th>姓名</th>
+												<th>数学</th>
+												<th>英语</th>
+                                                <th>语文</th>
+                                                <th>物理</th>
+                                                <th>化学</th>
+                                                <th>生物</th>
+                                                <th>总分</th>
+											</tr>
+                                            </thead>
+                                         <tbody>
+                                             {%for i in max_in5%}
+                                            <tr>
+                                                <td>{{i.studentNum}}</td>
+                                                <td>{{i.STName}}</td>
+                                                <td>{{i.Math3}}</td>
+                                                <td>{{i.English3}}</td>
+                                                <td>{{i.Chinese3}}</td>
+                                                <td>{{i.Physics3}}</td>
+                                                <td>{{i.Chemistry3}}</td>
+                                                <td>{{i.Biology3}}</td>
+                                                <td>{{i.Total}}</td>
+                                            </tr>
+                                             {%endfor%}
+                                         </tbody>
+                                   </table>
+                              </div>
+                        </div>
+                        <span class="or-rule"></span>
+                        <div class="content">
+                              <h4 class="title">最近一次考试后五名</h4>
+                              <div class="table-responsive">
+                                   <table class="table table-bordered">
+                                        <thead class="text-primary">
+											<tr>
+												<th>学号</th>
+												<th>姓名</th>
+												<th>数学</th>
+												<th>英语</th>
+                                                <th>语文</th>
+                                                <th>物理</th>
+                                                <th>化学</th>
+                                                <th>生物</th>
+                                                <th>总分</th>
+											</tr>
+                                            </thead>
+                                         <tbody>
+                                            {%for j in min_in5%}
+                                            <tr>
+                                                <td>{{j.studentNum}}</td>
+                                                <td>{{j.STName}}</td>
+                                                <td>{{j.Math3}}</td>
+                                                <td>{{j.English3}}</td>
+                                                <td>{{j.Chinese3}}</td>
+                                                <td>{{j.Physics3}}</td>
+                                                <td>{{j.Chemistry3}}</td>
+                                                <td>{{j.Biology3}}</td>
+                                                <td>{{j.Total}}</td>
+                                            </tr>
+                                             {%endfor%}
+                                         </tbody>
+                                   </table>
+                              </div>
+                        </div>
+                        <span class="or-rule"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function navset() {
+        var navs = document.getElementById("analysis")
+        var navsin = document.getElementById("subject_analysis")
+        navs.setAttribute("class", "active")
+        navsin.setAttribute("class", "active")
+    }
+    window.onload = navset();
+</script>
+{% endblock %}

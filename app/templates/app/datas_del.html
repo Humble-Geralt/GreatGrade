@@ -1,0 +1,141 @@
+{% extends "app/layoutnav.html" %}
+
+{% block content %}
+
+<body>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="content text-center">
+                            <div class="icon-big icon-warning">
+                                <i class="ti-alert">注意</i>
+                            </div>
+                            <h4>当您删除表单时，可以选择两种方法</h4>
+                            <h5>第一种为选择学号和考试次数删除，您需要输入学号和考试次数</h5>
+                            <h5>另一种为直接依靠考试序列号删除，您可以在上一个页面查到序列号</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form id="allInputsFormValidation" class="form-horizontal" action="." method="post" novalidate="">
+                            {% csrf_token %}
+                            <div class="content">
+                                <h4 class="title">删除记录</h4>
+                                <p class="text-warning">{{res}}</p>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">选项</label>
+                                        <div class="col-sm-10">
+                                            <label class="checkbox" id="newstudent" onchange="student()">
+                                                <input type="checkbox" data-toggle="checkbox" value="" name="newstudent">以序列删除记录
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            学号
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   id="student"
+                                                   name="studentid"
+                                                   minLength="7"
+                                                   oninput="value=value.replace(/[^\d]/g,'')" />
+                                        </div>
+                                        <div class="col-sm-4"><code>只允许数字</code></div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            考试次数
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   id="testid"
+                                                   name="testid"
+                                                   oninput="value=value.replace(/[^\d]/g,'')" />
+                                        </div>
+                                        <div class="col-sm-4"><code>只允许数字</code></div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            考试序列号
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control "
+                                                   type="text"
+                                                   name="testnum"
+                                                   oninput="value=value.replace(/[^\d]/g,'')" 
+                                                   id="testnum"
+                                                   disabled=""/>
+                                        </div>
+                                        <div class="col-sm-4"><code>只允许数字</code></div>
+                                    </div>
+                                </fieldset>
+                            <div class="card-footer text-center">
+                                <a class="btn btn-error btn-fill" onclick="window.location.href = '{% url 'dataschange' %}'">取消删除</a>
+                                <button type="submit" class="btn btn-info btn-fill">提交删除</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function navset() {
+        var navs = $("datas")
+        var navsin = $("datas_change")
+        navs.setAttribute("class", "active")
+        navsin.setAttribute("class", "active")
+    }
+    window.onload = navset();
+</script>
+<script type="text/javascript">
+    $().ready(function () {
+        $('#allInputsFormValidation').validate();
+    });
+</script>
+<script type="text/javascript">
+    function student() {
+        var check = document.getElementById("newstudent")
+        var testid = document.getElementById("testid")
+        var classcheck = document.getElementById("testnum")
+        var student = document.getElementById("student")
+        if (check.getAttribute("class") == 'checkbox checked') {
+            testid.setAttribute("disabled", "")
+            classcheck.removeAttribute("disabled")
+            student.setAttribute("disabled", "")
+        }
+        else {
+            testid.removeAttribute("disabled")
+            classcheck.setAttribute("disabled", "")
+            student.removeAttribute("disabled")
+
+        }
+    }
+</script>
+{% endblock %}

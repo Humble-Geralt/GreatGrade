@@ -1,0 +1,189 @@
+{% extends "app/layoutnav.html" %}
+
+{% block content %}
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <form action="." method="post" class="form-horizontal" style="padding: 5px;">
+                        <div class="header card-header-text">
+                            <h4 class="title">班级选择</h4>
+                        </div>
+                        {% csrf_token %}
+                        <div class="contect">
+                            <fieldset>
+                                <label class="col-sm-2 control-label" >Ganalyze</label>
+                                <div class="col-sm-8" style="padding-bottom: 5px;">
+                                    <input  name="class" type="text" class="form-control col-sm-3" placeholder="请输入班级(您管理的班级为{{tcclass}})" range="[1,50]">
+                                    <span> </span>
+                                </div>
+                                <button class="btn btn-rose ti-search" type="submit" tyle="margin-top: 5px;margin-left: 5px;"> 分析</button>
+                            </fieldset>
+                            <div class="header card-header-text">                        
+                                <span class="help-block text-warning">{{anmessage}}</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {%if res%}
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card" style="min-height: 400px">
+                    <div class="header card-header-text">
+                          <h4 class="title">{{class}}班逐次考试总览</h4>
+                    </div>
+                    <div id="zero" style="width: 100%;height:400px;"></div>
+                </div>
+            </div>
+            
+        </div>
+        
+    
+        <div class="row">
+            <div class="col-lg-8 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="header card-header-text">
+                          <h4 class="title">{{class}}班逐次考试前两百名人数</h4>
+                    </div>
+                   <div id="first" style="min-height:350px;">
+                   </div>
+                </div>
+            </div>
+    
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="card" style="min-height: 350px">
+                    <div class="content text-center" >
+                        <div class="icon-big icon-success">
+						<i class="ti-world"></i>
+                        <p>结果</p>
+						</div>
+                        <h4>本班在最近一次次考试中年级前两百名为 <b>{{lastin200}}</b>人</h4>
+                        <h4>在最近几次考试中趋势呈 <b>{{trend}}</b> </h4>
+                        <h4>最近一次考试最高分与最低分差距为 <b>{{max_min}}</b></h4>
+                    </div>
+                </div>
+            </div>           
+        </div>
+    </div>
+    {%endif%}
+</body>
+       
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function navset() {
+        var navs = document.getElementById("analysis")
+        var navsin = document.getElementById("class_analysis")
+        navs.setAttribute("class", "active")
+        navsin.setAttribute("class", "active")
+    }
+    window.onload = navset();
+</script>
+{%if res%}
+<script type="text/javascript">
+    var chartDom = document.getElementById('zero');
+    var aChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross',
+            crossStyle: {
+                color: '#999'
+            }
+        }
+    },
+    legend: {
+        data: ['最低分', '最高分', '平均成绩']
+    },
+    xAxis: [
+        {
+            type: 'category',
+            data: {{testcount}},
+            axisPointer: {
+                type: 'shadow'
+            }
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            name: '最低分',
+            min: 0,
+            max: 750,
+            interval: 150,
+            axisLabel: {
+                formatter: '{value} 分'
+            }
+        },
+        {
+            type: 'value',
+            name: '最高分',
+            min: 0,
+            max: 750,
+            interval: 150,
+            axisLabel: {
+                formatter: '{value} 分'
+            }
+        }
+    ],
+    series: [
+        {
+            name: '最低分',
+            type: 'bar',
+            data: {{min_grade}}
+        },
+        {
+            name: '最高分',
+            type: 'bar',
+            data: {{max_grade}}
+        },
+        {
+            name: '平均成绩',
+            type: 'line',
+            yAxisIndex: 1,
+            data: {{avg_grade}}
+        }
+    ]
+};
+// 使用刚指定的配置项和数据显示图表。
+option && aChart.setOption(option);
+</script>
+
+ <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+var chartDom = document.getElementById('first');
+var bChart = echarts.init(chartDom);
+var option;
+
+option = {
+    xAxis: {
+        type: 'category',
+        data: {{testcount}}
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: {{in200}},
+        type: 'bar'
+    }]
+};
+
+option && bChart.setOption(option);
+ </script>
+{%endif%}
+<script>
+    window.addEventListener("resize", function () {
+                  aChart.resize();
+                  bChart.resize();
+              });
+</script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "app/layoutnav.html" %}
+
+{% block content %}
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <form action="." method="get" class="form-horizontal" style="padding: 5px;">
+                        <div class="header card-header-text">
+                            <h4 class="title">搜索</h4>
+                        </div>
+                        {% csrf_token %}
+                        <div class="contect">
+                            <fieldset>
+                                <label class="col-sm-2 control-label">Gsearch</label>
+                                <div class="col-sm-8 {{typecode}}" id="input">
+                                    <input  name="q" type="text" class="form-control" placeholder="请输入学号"oninput="value=value.replace(/[^\d]/g,'')">
+                                    <span class="help-block">{{searchmessage}}</span>
+                                </div>
+                                <button class="btn btn-rose ti-search" type="submit" > 搜索</button>
+                            </fieldset>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {%if res %}
+        <div class="row">
+            <div class="col-lg-4 col-md-4"style="min-height:550px;">
+                <div class="card">
+                    <div class="header card-header-text">
+                         <h4 class="title">成绩走向</h4>
+                    </div>
+                    <div id="chartsearch" style="width: 100%;min-height:500px;"></div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8" style="min-height:300px;">
+                <div class="card">
+                    <div class="content">
+                        <h4 class="title">来自<b>{{class}}</b>班的学生 <b>{{name}}</b> 的搜索结果</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">次数</th>
+                                        <th></th>
+                                        <th>语文</th>
+                                        <th>数学</th>
+                                        <th>英语</th>
+                                        <th class="text-right">物理</th>
+                                        <th class="text-right">化学</th>
+                                        <th class="text-right">生物</th>
+                                        <th class="text-right">总分</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in search_res%}
+                                    <tr>
+                                        <td class="text-center">{{i.TEST_id}}</td>
+                                        <td>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="optionsCheckboxes" checked>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>{{i.Chinese3}}</td>
+                                        <td>{{i.Math3}}</td>
+                                        <td>{{i.English3}}</td>
+                                        <td class="text-right">{{i.Physics3}}</td>
+                                        <td class="text-right">{{i.Biology3}}</td>
+                                        <td class="text-right">{{i.Chemistry3}}</td>
+                                        <td class="text-right">{{i.Total}}</td>
+                                    </tr>
+                                    {% endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        {%endif%}
+    </div>
+</body>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function navset() {
+        var navs = document.getElementById("datas")
+        var navsin = document.getElementById("datas_search")
+        navs.setAttribute("class", "active")
+        navsin.setAttribute("class", "active")
+    }
+    window.onload = navset();
+</script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartsearch'));
+    var option;
+    // 指定图表的配置项和数据
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['语文', '数学', '英语', '物理', '化学', '生物']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            right: '5%',
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: {{testid|safe}}
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '语文',
+                type: 'line',
+                data: {{chinese}}
+            },
+            {
+                name: '数学',
+                type: 'line',
+                data: {{math}}
+            },
+            {
+                name: '英语',
+                type: 'line',
+                data: {{english}}
+            },
+            {
+                name: '物理',
+                type: 'line',
+                data: {{phy}}
+            },
+            {
+                name: '化学',
+                type: 'line',
+                data: {{bio}}
+            },
+            {
+                name: '生物',
+                type: 'line',
+                data: {{che}}
+            }
+        ]
+    };
+    window.onresize = function () { myChart.resize(); }
+    // 使用刚指定的配置项和数据显示图表。
+    option && myChart.setOption(option);
+</script>
+{% endblock %}

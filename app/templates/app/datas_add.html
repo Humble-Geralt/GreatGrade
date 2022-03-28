@@ -1,0 +1,237 @@
+{% extends "app/layoutnav.html" %}
+
+{% block content %}
+
+<body>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                      <div class="card">
+                          <div class="content text-center" >
+                              <div class="icon-big icon-warning">
+							        <i class="ti-alert">注意</i>
+							  </div>
+                              <h4>当您新增表单时，会默认保存到成绩总表</h4>
+                              <h5>这就意味着当您不提交学生的成绩时，学生成绩将为空值</h5>
+                          </div>
+                      </div>                           
+                 </div>
+                <div class="col-md-6">
+                      <div class="card">
+                      </div>
+                </div>                        
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form id="allInputsFormValidation" class="form-horizontal" action="." method="post" novalidate="">
+                            {% csrf_token %}
+                            <div class="content">
+                                <h4 class="title">新增记录</h4>
+                                <p class="text-warning">{{res}}</p>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">选项</label>
+                                        <div class="col-sm-10">
+                                            <label class="checkbox" id="newstudent" onchange="student()">
+                                                <input type="checkbox" data-toggle="checkbox" value="" name="newstudent">已存在学生
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            学号
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="studentid"
+                                                   minLength="7"
+                                                   required="required"
+                                                   oninput="value=value.replace(/[^\d]/g,'')" />
+                                        </div>
+                                        <div class="col-sm-4"><code>必填,只允许数字</code></div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            考试次数
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="testid"
+                                                   required="required"
+                                                   oninput="value=value.replace(/[^\d]/g,'')" />
+                                        </div>
+                                        <div class="col-sm-4"><code>必填,只允许数字</code></div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            姓名
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="name"
+                                                   id="namecheck" />
+                                        </div>
+                                        <div class="col-sm-4"><code>非新增可不填</code></div>
+                                    </div>
+                                </fieldset>
+
+                                 <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            班级
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="classid"
+                                                   id="classcheck" />
+                                        </div>
+                                        <div class="col-sm-4"><code>非新增可不填</code></div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            语文
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="sub1"
+                                                   range="[0,150]" />
+                                        </div>
+                                        <div class="col-sm-4"><code>范围:0-150</code></div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            数学
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="sub2"
+                                                   range="[0,150]" />
+                                        </div>
+                                        <div class="col-sm-4"><code>范围:0-150</code></div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            英语
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="sub3"
+                                                   range="[0,150]" />
+                                        </div>
+                                        <div class="col-sm-4"><code>范围:0-150</code></div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            物理
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="sub4"
+                                                   range="[0,110]" />
+                                        </div>
+                                        <div class="col-sm-4"><code>范围:0-110</code></div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            化学
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="sub5"
+                                                   range="[0,100]" />
+                                        </div>
+                                        <div class="col-sm-4"><code>范围:0-100</code></div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
+                                            生物
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control"
+                                                   type="text"
+                                                   name="sub6"
+                                                   range="[0,90]" />
+                                        </div>
+                                        <div class="col-sm-4"><code>范围:0-90</code></div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="card-footer text-center">                               
+                                <a class="btn btn-error btn-fill"onclick="window.location.href = '{% url 'dataschange' %}'">取消新增</a>
+                                <button type="submit" class="btn btn-info btn-fill" >提交新增</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function navset() {
+        var navs = $("datas")
+        var navsin = $("datas_change")
+        navs.setAttribute("class", "active")
+        navsin.setAttribute("class", "active")
+    }
+    window.onload = navset();
+</script>
+<script type="text/javascript">
+    $().ready(function () {
+        $('#allInputsFormValidation').validate();
+    });
+</script>
+<script type="text/javascript">
+    function student() {
+        var studentbool = document.getElementById("newstudent")
+        var name = document.getElementById("namecheck")
+        var classcheck = document.getElementById("classcheck")
+        if (studentbool.getAttribute("class") == 'checkbox checked') {
+            name.setAttribute("disabled", "")
+            classcheck.setAttribute("disabled", "")
+        }
+        else {
+            name.removeAttribute("disabled")
+            classcheck.removeAttribute("disabled")
+        }
+    }
+</script>
+{% endblock %}
