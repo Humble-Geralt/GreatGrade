@@ -22,5 +22,7 @@
 
 ![图片](https://user-images.githubusercontent.com/56829907/160332544-4c8573af-638f-41b4-86e9-80ddf69eebc8.png)
 
+还有成绩分析与成绩预测页面，不再展示
+
 文件中的sqlite数据库文件内没有示例数据，需要自行添加
 安装及使用请参考Django项目的启动
